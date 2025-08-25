@@ -1,5 +1,6 @@
 package com.ifcifc.test;
 
+import com.ifcifc.jsondb.BinaryDB;
 import com.ifcifc.jsondb.JsonDB;
 
 import java.util.ArrayList;
@@ -7,8 +8,8 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) {
         try {
-            JsonDB<TestModel> db = new JsonDB<TestModel>("test.json", TestModel.class);
-
+            //JsonDB<TestModel> db = new JsonDB<TestModel>("test.json", TestModel.class);
+            BinaryDB<TestModel> db = new BinaryDB<TestModel>("test.gdb", TestModel.class, true);
             //Creacion
             TestModel test = db.create(new TestModel("T1"));
             db.save();
@@ -64,14 +65,14 @@ public class Main {
 
             //Prueba de sincronia
             ArrayList<Thread> t_list = new ArrayList<>();
-
-            for(int i=0;i<300;i++){
+            final int _max = 900;
+            for(int i=0;i<=_max;i++){
                 final int t_id = i;
                 t_list.add(new Thread(() -> {
-                    System.out.println("hilo inicio " + t_id);
+                    //System.out.println("hilo inicio " + t_id);
                     TestModel tm = db.create(new TestModel("T"+t_id));
-                    db.save();
-                    System.out.println("hilo fin " + t_id);
+                    if(_max==t_id)db.save();
+                    //System.out.println("hilo fin " + t_id);
                 }));
             }
 
