@@ -2,7 +2,6 @@ package com.ifcifc.jsondb;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.util.zip.Deflater;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -28,11 +27,13 @@ public class BinaryDB<T extends BaseModel> extends PersistentStorage<T>{
         this.secureLock.secureRun(()-> {
             try {
                 ObjectOutputStream out;
-                if(this.useGZ){
-                    GZIPOutputStream gzos = new GZIPOutputStream(new FileOutputStream(this.file_db_lock));
 
+                if(this.useGZ){
+                    //Utiliza GZip para guardar los datos
+                    GZIPOutputStream gzos = new GZIPOutputStream(new FileOutputStream(this.file_db_lock));
                     out = new ObjectOutputStream(gzos);
                 }else{
+                    //Sino almacena el archivo binario directamente
                     out = new ObjectOutputStream(new FileOutputStream(this.file_db_lock));
                 }
 
@@ -54,11 +55,11 @@ public class BinaryDB<T extends BaseModel> extends PersistentStorage<T>{
 
     @Override
     protected void load(File to_load) {
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         this.secureLock.secureRun(()-> {
             try {
                 ObjectInputStream in;
                 if(this.useGZ){
+                    //Utiliza GZip para cargar los datos
                     GZIPInputStream gzos = new GZIPInputStream(new FileInputStream(to_load));
                     in = new ObjectInputStream(gzos);
                 }else{
