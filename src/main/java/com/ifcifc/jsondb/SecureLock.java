@@ -42,4 +42,17 @@ public class SecureLock {
             lock.unlock();
         }
     }
+
+
+    public void lock(){
+        this.lock.lock();
+    }
+
+    public void unlock(){
+        this.lock.unlock();
+    }
+
+    public boolean isLocked(){
+        return this.lock.isLocked();
+    }
 }

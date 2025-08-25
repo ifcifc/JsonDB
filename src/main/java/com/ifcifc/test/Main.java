@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) {
         try {
-            JsonDB<TestModel> db = new JsonDB<TestModel>("test", TestModel.class);
+            JsonDB<TestModel> db = new JsonDB<TestModel>("test.json", TestModel.class);
 
             //Creacion
             TestModel test = db.create(new TestModel("T1"));
@@ -41,9 +41,31 @@ public class Main {
             //All
             db.all().forEach(System.out::println);
 
+            //Transaction
+            db.transaction(db1 -> {
+                TestModel t2 = db1.get(test2.getId());
+                t2.setName("trans 1");
+                return false;
+            });
+
+            System.out.println("Transaction<false>: " + db.get(test2.getId()));
+
+            //Transaction
+            db.transaction(db1 -> {
+                TestModel t2 = db1.get(test2.getId());
+                t2.setName("trans 2");
+                return true;
+            });
+
+            System.out.println("Transaction<true>: " + db.get(test2.getId()));
+
+            //Count
+            System.out.println("DB Count: " + db.count());
+
             //Prueba de sincronia
             ArrayList<Thread> t_list = new ArrayList<>();
-            for(int i=0;i<50;i++){
+
+            for(int i=0;i<300;i++){
                 final int t_id = i;
                 t_list.add(new Thread(() -> {
                     System.out.println("hilo inicio " + t_id);
@@ -54,7 +76,6 @@ public class Main {
             }
 
             t_list.forEach(Thread::start);
-
         }catch (Exception e){
             e.printStackTrace();
         }

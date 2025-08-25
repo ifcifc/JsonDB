@@ -19,8 +19,13 @@ public abstract class BaseModel implements Cloneable, Serializable {
     }
 
     @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
+    public Object clone() {
+        try {
+            return super.clone();
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
     protected Gson getGson(){
